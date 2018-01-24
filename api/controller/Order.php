@@ -107,10 +107,9 @@ class Order extends baseApi implements StandardInterface {
     }
 
     /**
+     * 订单商品评论
 
-    +     * 订单商品评论
-
-    +     */
+   */
 
    public function orderGoodsCommentAction()
    {
