@@ -613,7 +613,6 @@ class Order extends BaseService{
         }
 
         foreach ($orderGoods as $k => $v){
-//            $is_in = ;
             if (empty($comment_arr) ||(!empty($comment_arr) && !in_array($v['order_goods_id'],$comment_arr))){
                 $time = time();
                 $data = array(
@@ -656,19 +655,6 @@ class Order extends BaseService{
 //        }
 //        $arr = array_unique($arr);
 //        $ordergoods   = $orderGoodsM -> where('order_id' ,'in', $arr)->field('goods_id') -> select();
-//        print_r($orderGoods);die;
-//        $time = time();
-//        foreach ($ordergoodsid as $k => $v){
-//
-//        }
-//        $data = array(
-//            'uid' => $uid,
-//            'order_goods_id' =>,
-//            'level' => 0,
-//            'text' => '',
-//            'create_time' => $time,
-//            'status' => 0
-//        );
 //        if (isset($param['page'])){
 //            $page = $param['page'];
 //            $offset = ($page - 1)*10;
