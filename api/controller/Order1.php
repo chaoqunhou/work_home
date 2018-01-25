@@ -109,13 +109,14 @@ class Order extends baseApi implements StandardInterface {
     /**
      * 订单商品评论
 
-     */
+   */
 
    public function orderGoodsCommentAction()
    {
         try{
             if (empty($_SERVER['uid'])) throw new Exception('需要登陆', 1100);
             $uid = $_SERVER['uid'];
+           //获取到相关的状态参数
             $param =input('param.');
             $orderS = new OrderService();
             $res = $orderS ->orderGoodsComment($uid,$param);
@@ -126,70 +127,6 @@ class Order extends baseApi implements StandardInterface {
         returnJson($res);
 
     }
-
-    /**
-     * 填写订单商品评论
-
-     */
-
-    public function addGoodsCommentAction()
-    {
-        try{
-            if (empty($_SERVER['uid'])) throw new Exception('需要登陆', 1100);
-            $uid = $_SERVER['uid'];
-            $param =input('param.');
-            $orderS = new OrderService();
-            $res = $orderS ->addGoodsComment($uid,$param['order_goods_id'],$param['text']);
-        }catch( Exception $e){
-            returnJson($e ->getMessage(),$e->getCode());
-        }
-
-        returnJson($res);
-
-    }
-
-    /**
-     * 订单商品待评论列表
-
-     */
-
-    public function goodsCommentListAction()
-    {
-        try{
-            if (empty($_SERVER['uid'])) throw new Exception('需要登陆', 1100);
-            $uid = $_SERVER['uid'];
-            $param =input('param.');
-            $orderS = new OrderService();
-            $res = $orderS ->goodsCommentList($uid,$param['page_index'], $param['page_size']);
-        }catch( Exception $e){
-            returnJson($e ->getMessage(),$e->getCode());
-        }
-
-        returnJson($res);
-
-    }
-
-
-    /**
-     * 商品评论列表
-
-     */
-
-    public function commentListAction()
-    {
-        try{
-            if (empty($_SERVER['uid'])) throw new Exception('需要登陆', 1100);
-            $param =input('param.');
-            $orderS = new OrderService();
-            $res = $orderS ->commentList($param['goods_id'],$param['page_index'], $param['page_size']);
-        }catch( Exception $e){
-            returnJson($e ->getMessage(),$e->getCode());
-        }
-
-        returnJson($res);
-
-    }
-
 //   public function orderWaitForPayListAction(){
 //        try{
 //            $uid = $_SERVER['uid'];

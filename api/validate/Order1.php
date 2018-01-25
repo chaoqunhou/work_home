@@ -20,16 +20,14 @@ class Order extends Validate
         'address_id'    => 'require|number',
         'shop_id'       => 'require|number',
         'order_id'      => 'require|number',
-        'order_goods_id'      => 'require|number',
         'order_status'      => 'require|number',
         'mansong_id'    => 'number',
         'buyer_message' => 'chsDash',
         'payment_type'  => 'number',
         'is_fast_buy'  => 'in:0,1',
+        'order_goods_id' => 'require|number',
         'refund_shipping_company' => 'require',
         'refund_shipping_code' => 'require',
-        'text' =>  'require',
-        'page_index' 	=> 'require|number|>:0'
     ];
 
     protected $scene = [
@@ -43,10 +41,7 @@ class Order extends Validate
         'affirmOrderAction' =>  ['access_token','order_id'],
         'askForRefundAction' =>  ['access_token','','order_goods_id','is_fast_buy'],
         'addRefundShippingAction' =>  ['access_token','','order_goods_id','refund_shipping_code','refund_shipping_company'],
-        'orderGoodsCommentAction' =>  ['access_token','order_id'],
-        'addGoodsCommentAction'  =>  ['access_token','order_goods_id','text'],
-        'goodsCommentListAction'  =>  ['access_token','page_index'],
-        'commentListAction'  =>  ['access_token','goods_id','page_index']
+        'orderGoodsCommentAction' =>  ['access_token','order_id']
 //        'refundApprovalAction' =>  ['access_token','','order_goods_id','refund_shipping_code','refund_shipping_company'],
     ];
 }

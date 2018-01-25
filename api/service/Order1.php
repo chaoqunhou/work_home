@@ -594,13 +594,19 @@ class Order extends BaseService{
         return $orderList;
     }
 
-       public function addComment($order_id){
+    public function orderGoodsComment($uid,$param){
         $orderGoodsM = new dataOrderGoods();
-        $orderGoods = $orderGoodsM ->where(['order_id'=>$order_id])->field('order_goods_id,order_id,buyer_id,shop_id,goods_id,goods_name')-> select();
+        $orderGoods = $orderGoodsM ->where(['order_id'=>$param['order_id']])->field('order_goods_id,order_id,buyer_id,shop_id,goods_id,goods_name')-> select();
 
         $orderGoods = collection($orderGoods) ->toArray();
+//        foreach ($orderGoods as $k => $v){
+//            $ogcid_arr[] = $v['order_goods_id'];
+//        }
+//        $arr = array_unique($arr);
+//        $ordergoods   = $orderGoodsM -> where('order_id' ,'in', $arr)->field('goods_id') -> select();
+//        print_r($arr);die;
         $orderGoodsComment = new dataOrderGoodsComment();
-        $comment = $orderGoodsComment->where(['order_id'=>$order_id])->field('order_goods_id')->select();
+        $comment = $orderGoodsComment->where(['uid'=>$uid,'order_id'=>$param['order_id']])->field('order_goods_id')->select();
 
         foreach ($comment as $k => $v){
             $comment_arr[] = $v['order_goods_id'];
@@ -614,57 +620,16 @@ class Order extends BaseService{
                     'order_id' => $v['order_id'],
                     'goods_id' => $v['goods_id'],
                     'order_goods_id' =>$v['order_goods_id'],
-                    'create_time' => $time,
-                    'update_time' => $time,
-                    'status' => 0
+                    'create_time' => $time
                 );
                 $insert[] = $data;
             }
         }
-        if(!empty($insert)){
-            $res = $orderGoodsComment->saveAll($insert);
-        }else{
-            throw new Exception('已有评论记录',501);
-        }
-        return $res;
-    }
-
-    public function orderGoodsComment($uid,$param){
-//        $orderGoodsM = new dataOrderGoods();
-//        $orderGoods = $orderGoodsM ->where(['order_id'=>$param['order_id']])->field('order_goods_id,order_id,buyer_id,shop_id,goods_id,goods_name')-> select();
-//
-//        $orderGoods = collection($orderGoods) ->toArray();
-////        foreach ($orderGoods as $k => $v){
-////            $ogcid_arr[] = $v['order_goods_id'];
-////        }
-////        $arr = array_unique($arr);
-////        $ordergoods   = $orderGoodsM -> where('order_id' ,'in', $arr)->field('goods_id') -> select();
-////        print_r($arr);die;
-//        $orderGoodsComment = new dataOrderGoodsComment();
-//        $comment = $orderGoodsComment->where(['uid'=>$uid,'order_id'=>$param['order_id']])->field('order_goods_id')->select();
-//
-//        foreach ($comment as $k => $v){
-//            $comment_arr[] = $v['order_goods_id'];
-//        }
-//
-//        foreach ($orderGoods as $k => $v){
-//            if (empty($comment_arr) ||(!empty($comment_arr) && !in_array($v['order_goods_id'],$comment_arr))){
-//                $time = time();
-//                $data = array(
-//                    'uid' => $v['buyer_id'],
-//                    'order_id' => $v['order_id'],
-//                    'goods_id' => $v['goods_id'],
-//                    'order_goods_id' =>$v['order_goods_id'],
-//                    'create_time' => $time
-//                );
-//                $insert[] = $data;
-//            }
-//        }
-//           if(!empty($insert)){
-//               $res = $orderGoodsComment->saveAll($insert);
-//           }else{
-//               throw new Exception('已有评论记录',501);
-//           }
+           if(!empty($insert)){
+               $res = $orderGoodsComment->saveAll($insert);
+           }else{
+               throw new Exception('已有评论记录',501);
+           }
 
 //        $orderM = new dataOrder();
 //        $where = ['buyer_id' => $uid,'is_deleted' => 0,'order_status'=>$param['order_status']];//
@@ -710,7 +675,6 @@ class Order extends BaseService{
 //        die;
 //        $res = $orderList[$orderList_key]['goods_list']['goods_id'];
 ////        return $res;
-        $res = $this->addComment($param['order_id']);
         return $res;
     }
 //    public function getOrderWaitForPayList($uid){
@@ -941,7 +905,6 @@ class Order extends BaseService{
         $this   -> refundOrderGoodsTable($order_id,$order_goods_id,$refund_status);
         $this   -> orderRefundTable($order_goods_id,$refund_status,$action,$action_way, $refund_id);
     }
-
     //确认收货
     public function affirmOrder($order_id){
         $orderM      = new dataOrder();
@@ -962,68 +925,61 @@ class Order extends BaseService{
         //需要考虑定时事件
         /****************************************************确认收货后，形成空内容订单商品评论记录****************************************************/
 
+        $orderGoods = $orderGoodsM ->where(['order_id'=>$order_id,'order_status' => 3])->field('order_goods_id,order_id,buyer_id,shop_id,goods_id,goods_name')-> select();
+
+        $orderGoods = collection($orderGoods) ->toArray();
+//        foreach ($orderGoods as $k => $v){
+//            $arr[] = $v['order_id'];
+//        }
+//        $arr = array_unique($arr);
+//        $ordergoods   = $orderGoodsM -> where('order_id' ,'in', $arr)->field('goods_id') -> select();
+        print_r($orderGoods);die;
+        $time = time();
+        foreach ($ordergoodsid as $k => $v){
+
+        }
+//        $data = array(
+//            'uid' => $uid,
+//            'order_goods_id' =>,
+//            'level' => 0,
+//            'create_time' => $time,
+//            'status' => 0
+//        );
+//        if (isset($param['page'])){
+//            $page = $param['page'];
+//            $offset = ($page - 1)*10;
+//        }else{
+//            $offset = 0;
+//        }
+//        $orderList = $orderM -> where($where)->limit($offset,10) -> select();
+//        $orderGoodsData     = $this -> getOrderGoodsDetail($orderId);
+        //根据不同订单将相应的商品放入订单树下
+        foreach($orderList as $orderList_key => $orderList_value){
+            print_r($orderList_value);
+//            foreach($orderGoodsData as $goods_key => $goods_value){
+//                if ($orderList_value['order_id'] == $goods_value['order_id']){
+//                    $orderList[$orderList_key]['goods_list'][] = $goods_value;
+//                }
+//            }
+        }
+        die;
+        $res = $orderList[$orderList_key]['goods_list']['goods_id'];
+//        return $res;
+        return $orderList;
+
         if($orderRes > 0 && $orderGoodsRes>0){
             $orderM         -> commit();
             $orderGoodsM    -> commit();
-            $this -> addComment($order_id);
             return 1;
         }else{
             $orderM         -> rollback();
             $orderGoodsM    -> rollback();
         }
 
+
+
     }
 
 
-    //添加商品评论
-    public function addGoodsComment($user_id,$order_goods_id,$text){
-        $orderGoodsComment = new dataOrderGoodsComment();
-        $comment_id = $orderGoodsComment->where(['uid'=>$user_id,'order_goods_id'=>$order_goods_id,'status'=>0])->field('comment_id')->find();
-        if (!empty($comment_id)){
-            $time = time();
-            $data = array(
-                'text' => $text,
-                'update_time' => $time,
-                'status' => 1
-            );
-            $res = $orderGoodsComment->save($data,['comment_id'=>$comment_id['comment_id']]);
-
-            return $res;
-        }else{
-            throw new Exception('已评论过！',502);
-        }
-    }
-
-    //商品评论待评论列表
-    public function goodsCommentList($user_id,$page_index = 1, $page_size = 0, $condition = '', $order = '', $field = '*'){
-        $orderGoodsComment = new dataOrderGoodsComment();
-//        if (isset($param['page'])){
-//            $page = $param['page'];
-//            $offset = ($page - 1)*10;
-//        }else{
-//            $offset = 0;
-//        }
-//        $commentList = $orderGoodsComment->where(['uid'=>$user_id,'status'=>0])->limit($offset,10)->select();
-        $condition = array('uid' => $user_id,'status'=>0);
-        $commentList = $orderGoodsComment->pageQuery($page_index, $page_size, $condition, $order, $field);
-        $res = $commentList;
-        return $res;
-    }
-
-    //商品评论列表
-    public function commentList($goods_id,$page_index = 1, $page_size = 0, $condition = '', $order = '', $field = '*'){
-        $orderGoodsComment = new dataOrderGoodsComment();
-//        if (isset($param['page'])){
-//            $page = $param['page'];
-//            $offset = ($page - 1)*10;
-//        }else{
-//            $offset = 0;
-//        }
-//        $commentList = $orderGoodsComment->where(['goods_id'=>$goods_id,'status'=>1])->limit($offset,10)->select();
-        $condition = array('goods_id'=>$goods_id,'status'=>1);
-        $commentList = $orderGoodsComment->pageQuery($page_index, $page_size, $condition, $order, $field);
-        $res = $commentList;
-        return $res;
-    }
 
 }
